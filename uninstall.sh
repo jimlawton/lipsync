@@ -11,13 +11,15 @@ fi
 
 echo "lipsync uninstall script"
 	rm -rf /usr/share/doc/lipsyncd
-	rm /etc/init.d/lipsync*
-	rm /etc/lipsync*
-	rm /usr/local/bin/lipsync
-	unlink /usr/local/bin/lipsyncd
-	rm /usr/local/bin/lipsync-notify
-	crontab -u $username -l | awk '$0!~/lipsync/ { print $0 }' > newcronjob
-	crontab -u $username newcronjob; rm newcronjob
+	rm -f /etc/init.d/lipsync*
+	rm -f /etc/lipsync*
+	rm -f /usr/local/bin/lipsync
+	if [ -f /usr/local/bin/lipsyncd ]; then 
+		unlink /usr/local/bin/lipsyncd
+	fi
+	rm -f /usr/local/bin/lipsync-notify
+	crontab -u $USER -l | awk '$0!~/lipsync/ { print $0 }' > newcronjob
+	crontab -u $USER newcronjob; rm newcronjob
 exit 0
 
 
