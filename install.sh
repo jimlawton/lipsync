@@ -133,6 +133,13 @@ build_conf(){
 		-e 's|LSREMSERV|'$remote_server'|g' \
 		-e 's|LSREMDIR|'$lipsync_dir_remote'|g'
 	echo "done"
+	if [ ! -f /home/$username/.lipsyncd/excludes ]; then
+		echo -n "* Creating lipsync excludes config..."
+		cat >/home/$username/.lipsyncd/excludes <<EOF
+.snapshot
+EOF
+		echo "done"
+	fi
 }
 
 deploy(){
@@ -198,7 +205,7 @@ deploy(){
 initial_sync(){
 	echo -n "* Doing inital sync with server..."
 	. /etc/lipsyncd
-	su $USER_NAME -c 'rsync -rav --stats --log-file=/home/'$USER_NAME'/.lipsyncd/lipsyncd.log -e "ssh -l '$USER_NAME' -p '$SSH_PORT'" '$REMOTE_HOST':'$REMOTE_DIR' '$LOCAL_DIR''
+	su $USER_NAME -c 'rsync -rav --stats --log-file=/home/'$USER_NAME'/.lipsyncd/lipsyncd.log --exclude-from=/home/'$USER_NAME'/.lipsyncd/excludes -e "ssh -l '$USER_NAME' -p '$SSH_PORT'" '$REMOTE_HOST':'$REMOTE_DIR' '$LOCAL_DIR''
 	echo "Initial sync `date` Completed" > /home/$username/.lipsyncd/lipsyncd.log
 }
 
