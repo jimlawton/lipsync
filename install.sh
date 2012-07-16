@@ -53,7 +53,7 @@ questions(){
 	read port
 	
 	echo -n "> SERVER/CLIENT: username (must exist on both): "
-    	read username
+	read username
     
 	echo -n "> CLIENT: directory to be synced: "
 	read lipsync_dir_local
@@ -221,7 +221,7 @@ if [ "${1}" = "uninstall" ]; then
 	echo "	ALERT: Uninstall option chosen, all lipsync files and configuration will be purged!"
 	echo -n "	ALERT: To continue press enter to continue, otherwise hit ctrl-c now to bail..."
 	read continue
-	uninstall
+	/usr/share/doc/lipsyncd/uninstall.sh
 	exit 0
 else
 	questions
