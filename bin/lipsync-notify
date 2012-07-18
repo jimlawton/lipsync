@@ -7,7 +7,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 CONF_FILE=/etc/lipsyncd
 
 if [ -e $CONF_FILE ]; then
-        . $CONF_FILE
+	. $CONF_FILE
 fi
 
 SYSTEM=`uname`
