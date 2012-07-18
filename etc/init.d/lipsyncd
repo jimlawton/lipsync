@@ -26,7 +26,7 @@ CONF_FILE=/etc/lipsyncd
 test -x $DAEMON || exit 0
 
 if [ -e $CONF_FILE ]; then
-        . $CONF_FILE
+    . $CONF_FILE
 fi
 
 LOGFILE=/home/$USER_NAME/.$NAME/$NAME.log
@@ -40,9 +40,9 @@ if [ -f /etc/default/lipsyncd ] ; then
 fi
 
 # ensure user's log/pid dir is avail, create if not
- if [ ! -d /home/$USER_NAME/.$NAME ]; then
-                mkdir /home/$USER_NAME/.$NAME
-        fi
+if [ ! -d /home/$USER_NAME/.$NAME ]; then
+    mkdir /home/$USER_NAME/.$NAME
+fi
 # verify sane perms on log/pid dir
 chown $USER_NAME:$USER_NAME /home/$USER_NAME/.$NAME
 
