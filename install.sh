@@ -48,18 +48,36 @@ echo "ok"
 questions(){
 	echo -n "> SERVER: IP or domainname: "
 	read remote_server
+	if [ -z $remote_server ]; then
+		echo "Error: you must specify a remote server!"
+		exit 1
+	fi
 
-	echo -n "> SERVER: SSH port: "
+	echo -n "> SERVER: SSH port [22]: "
 	read port
+	if [ -z $port ]; then
+		port=22
+	fi
 	
-	echo -n "> SERVER/CLIENT: username (must exist on both): "
+	echo -n "> SERVER/CLIENT: username (must exist on both) [$USER]: "
 	read username
+	if [ -z $username ]; then
+		username=$USER
+	fi
     
 	echo -n "> CLIENT: directory to be synced: "
 	read lipsync_dir_local
+	if [ -z $lipsync_dir_local ]; then
+		echo "Error: you must specify a local directory!"
+		exit 1
+	fi
 
 	echo -n "> SERVER: remote directory to be synced: "
 	read lipsync_dir_remote
+	if [ -z $lipsync_dir_remote ]; then
+		echo "Error: you must specify a remote directory!"
+		exit 1
+	fi
 }
 
 ssh_keygen(){
@@ -228,7 +246,26 @@ if [ "${1}" = "uninstall" ]; then
 	echo "	ALERT: Uninstall option chosen, all lipsync files and configuration will be purged!"
 	echo -n "	ALERT: To continue press enter to continue, otherwise hit ctrl-c now to bail..."
 	read continue
-	/usr/share/doc/lipsyncd/uninstall.sh
+	eval LIPSYNCD_PROCESS=`ps aux | grep lipsyncd.pid | grep -cv grep`
+	if [ $LIPSYNCD_PROCESS -eq 0 ]; then
+		echo "  Stopping lipsync..."
+		killall lipsyncd
+	fi
+	echo " Uninstalling lipsync..."
+    if [ -f /usr/share/doc/lipsyncd/uninstall.sh ]; then 
+		/usr/share/doc/lipsyncd/uninstall.sh
+	else
+		rm -rf /usr/share/doc/lipsyncd
+		rm -f /etc/init.d/lipsync*
+		rm -f /etc/lipsync*
+		rm -f /usr/local/bin/lipsync
+		if [ -f /usr/local/bin/lipsyncd ]; then 
+			unlink /usr/local/bin/lipsyncd
+		fi
+		rm -f /usr/local/bin/lipsync-notify
+		crontab -u $USER -l | awk '$0!~/lipsync/ { print $0 }' > newcronjob
+		crontab -u $USER newcronjob; rm newcronjob
+	fi
 	exit 0
 else
 	questions
