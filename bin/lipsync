@@ -11,14 +11,14 @@ CONF_FILE=/etc/lipsyncd
 ###############
 eval LIPSYNCD_PROCESS=`ps aux | grep lipsyncd.pid | grep -cv grep`
 if [ $LIPSYNCD_PROCESS -eq 0 ]; then
-	        exit 0
+	exit 0
 fi
 
 ###############
 # source config, define logfile
 ###############
 if [ -e $CONF_FILE ]; then
-        . $CONF_FILE
+	. $CONF_FILE
 fi
 LOG_FILE="/home/$USER_NAME/.lipsyncd/lipsyncd.log"
 
@@ -37,8 +37,8 @@ echo "`date "+%a %b %d %T %Y"` Cron: checking for running lipsync processes" >> 
 eval NB_RSYNC_PROCESS=`ps aux | grep rsync | grep "$REMOTE_HOST" | grep -v rsyncssh | grep -cv grep`
 echo "`date "+%a %b %d %T %Y"` Cron: found $NB_RSYNC_PROCESS running lipsync processes" >> $LOG_FILE
 if [ $NB_RSYNC_PROCESS -ne 0 ]; then
-        echo "`date "+%a %b %d %T %Y"` Cron: not running lipsync, another process already running" >> $LOG_FILE
-        exit 0
+	echo "`date "+%a %b %d %T %Y"` Cron: not running lipsync, another process already running" >> $LOG_FILE
+	exit 0
 fi
 
 ###############
@@ -67,11 +67,11 @@ DELETED_FILES=`cat /home/$USER_NAME/.lipsyncd/lipsyncd.log | sed -n ''$LAST_RUN'
 # popup if we've had deleted files on this run
 ###############
 if [ "${DELETED_FILES}" -ne '0' ]; then
-    	if [ "${DELETED_FILES}" -eq '1' ]; then
+	if [ "${DELETED_FILES}" -eq '1' ]; then
 		/usr/local/bin/lipsync-notify "$DELETED_FILES file deleted"
 	else
-        	/usr/local/bin/lipsync-notify "$DELETED_FILES files deleted"
-        fi
+       	/usr/local/bin/lipsync-notify "$DELETED_FILES files deleted"
+	fi
 fi
 
 ###############
@@ -80,11 +80,11 @@ fi
 TOTAL_TRANS=`cat /home/$USER_NAME/.lipsyncd/lipsyncd.log |grep "Number of files transferred" | tail -n1 | cut -d" " -f8`
 
 if [ "${TOTAL_TRANS}" -gt '0' ]; then
-    	if [ "${TOTAL_TRANS}" -eq '1' ]; then
+	if [ "${TOTAL_TRANS}" -eq '1' ]; then
 		/usr/local/bin/lipsync-notify "$TOTAL_TRANS file synced"
 	else
-        	/usr/local/bin/lipsync-notify "$TOTAL_TRANS files synced"
-        fi
+		/usr/local/bin/lipsync-notify "$TOTAL_TRANS files synced"
+	fi
 fi
 
 ###############
